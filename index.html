@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff5f87" />
+  <title>给你的七夕小宇宙</title>
+  <style>
+    :root { --rose:#ff5f87; --deep:#672641; --cream:#fff8f4; --pink:#ffe4eb; --gold:#ffc96c; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--deep); font-family:"Microsoft YaHei", "PingFang SC", sans-serif; background:radial-gradient(circle at 20% 5%,#fff 0 6%,transparent 25%),linear-gradient(145deg,#fff4f5,#ffe0e8 55%,#ffcad8); overflow-x:hidden; }
+    .stars, .hearts { position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .star { position:absolute; color:#fff; opacity:.75; animation:twinkle 2.8s infinite alternate; }
+    .float-heart { position:absolute; color:#ff7798; opacity:.45; animation:drift 11s linear infinite; }
+    main { position:relative; z-index:1; width:min(92%,720px); margin:auto; padding:40px 0 56px; text-align:center; }
+    .tag { display:inline-block; padding:8px 14px; border-radius:999px; background:#ffffffa8; color:var(--rose); font-size:13px; letter-spacing:1px; }
+    h1 { margin:16px 0 8px; font-size:clamp(30px,8vw,48px); font-weight:800; letter-spacing:2px; }
+    .subtitle { margin:0 auto 24px; max-width:28em; line-height:1.8; color:#8f5267; }
+    .hero { padding:30px 20px; border-radius:28px; background:#ffffffbd; box-shadow:0 18px 40px #b3507040; backdrop-filter:blur(8px); }
+    .moon { margin:auto; width:114px; height:114px; border-radius:50%; display:grid; place-items:center; font-size:57px; background:radial-gradient(circle at 35% 30%,#fffdf3,#ffd27b 62%,#ffac77); box-shadow:0 0 0 11px #ffd8df99,0 0 42px #ffd595; }
+    .love-line { margin:21px 0 14px; font-size:19px; font-weight:700; }
+    .countdown { display:flex; justify-content:center; gap:10px; }
+    .countdown div { width:64px; padding:10px 3px; border-radius:14px; background:var(--pink); }
+    .countdown b { display:block; color:var(--rose); font-size:24px; }
+    .countdown span { font-size:11px; color:#9b6272; }
+    section { margin-top:24px; padding:23px 20px; border-radius:24px; background:#fffdfce6; box-shadow:0 12px 30px #a64c6530; text-align:left; }
+    h2 { margin:0 0 13px; font-size:20px; }
+    .quote { min-height:62px; margin:0; color:#86485d; line-height:1.85; font-size:16px; }
+    button { border:0; border-radius:14px; padding:12px 16px; color:#fff; background:linear-gradient(135deg,#ff7898,#f45179); box-shadow:0 7px 16px #e859793f; font:inherit; cursor:pointer; transition:transform .2s; }
+    button:hover { transform:translateY(-2px); }
+    .gift { display:grid; grid-template-columns:1fr auto; gap:15px; align-items:center; }
+    .gift p { margin:0; color:#8f5267; line-height:1.7; }
+    .wish-form { display:flex; gap:10px; }
+    input { min-width:0; flex:1; padding:12px 13px; border:1px solid #ffd1dc; border-radius:14px; outline-color:var(--rose); font:inherit; }
+    .wish-list { padding:0; margin:16px 0 0; list-style:none; }
+    .wish-list li { margin-top:8px; padding:10px 12px; border-radius:12px; background:#fff1f4; color:#9a5268; }
+    .wish-list li::before { content:'♥ '; color:var(--rose); }
+    .constellation { text-align:center; background:linear-gradient(145deg,#52274e,#2d2147); color:#fff4ef; overflow:hidden; }
+    .constellation h2 { color:#ffe2a8; }.constellation p { color:#f7cfdd; margin:0; }
+    .star-game { display:flex; justify-content:center; gap:8px; padding:17px 0 12px; }
+    .wish-star { padding:8px; background:transparent; box-shadow:none; color:#79637d; font-size:28px; transition:color .25s,transform .25s,text-shadow .25s; }
+    .wish-star:hover { transform:translateY(-4px) scale(1.12); }.wish-star.lit { color:#ffe18a; text-shadow:0 0 15px #ffe18a; }
+    .secret-name { max-height:0; opacity:0; transform:translateY(8px); transition:.55s ease; overflow:hidden; font-size:17px; font-weight:bold; }
+    .secret-name.show { max-height:80px; opacity:1; transform:none; padding-top:8px; }
+    .final-secret { text-align:center; background:linear-gradient(135deg,#fff8f2,#ffe1e9); }.final-secret p { color:#8f5267; line-height:1.8; }
+    .answer-row { display:flex; justify-content:center; gap:12px; margin-top:16px; }.answer-row .no { color:#a3596e; background:#fff; box-shadow:none; transition:transform .25s; }
+    .answer { min-height:24px; margin:16px 0 0!important; color:var(--rose)!important; font-weight:bold; }.answered { box-shadow:0 12px 34px #ff6c8a66; }
+    .footer { padding-top:25px; color:#a26476; font-size:13px; }
+    .burst { position:fixed; z-index:4; font-size:22px; pointer-events:none; animation:pop .9s ease-out forwards; }
+    @keyframes twinkle { to { opacity:.2; transform:scale(.7); } }
+    @keyframes drift { from { transform:translateY(105vh) rotate(0); } to { transform:translateY(-12vh) rotate(360deg); } }
+    @keyframes pop { to { transform:translate(var(--x),var(--y)) scale(.3); opacity:0; } }
+    @media (max-width:480px) { main{padding-top:26px}.hero,section{border-radius:20px}.gift{grid-template-columns:1fr}.gift button{width:100%}.wish-form{flex-direction:column}.wish-form button{width:100%}.star-game{gap:2px}.wish-star{font-size:25px} }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div><div class="hearts" aria-hidden="true"></div>
+  <main>
+    <span class="tag">2026 · 七夕限定</span>
+    <h1>刘毓雯的小宇宙 ♥</h1>
+    <p class="subtitle">银河那么大，我最想奔向的，始终是刘毓雯身边那一小块温柔的光。</p>
+    <div class="hero">
+      <div class="moon" aria-hidden="true">🐰</div>
+      <p class="love-line">距离七夕，还有一点点心动</p>
+      <div class="countdown" aria-label="距七夕倒计时"><div><b id="days">--</b><span>天</span></div><div><b id="hours">--</b><span>时</span></div><div><b id="mins">--</b><span>分</span></div><div><b id="secs">--</b><span>秒</span></div></div>
+    </div>
+    <section>
+      <h2>今日份心动</h2>
+      <p class="quote" id="quote">“喜欢你不是三分钟热度，是蓄谋已久后的深思熟虑。”</p>
+      <button type="button" id="newQuote">换一句情话</button>
+    </section>
+    <section class="constellation">
+      <h2>星星有话对你说</h2>
+      <p>点亮每一颗星星，藏起来的名字会出现。</p>
+      <div class="star-game" id="starGame" aria-label="点亮星星小游戏">
+        <button type="button" class="wish-star" aria-label="第一颗星">✦</button>
+        <button type="button" class="wish-star" aria-label="第二颗星">✦</button>
+        <button type="button" class="wish-star" aria-label="第三颗星">✦</button>
+        <button type="button" class="wish-star" aria-label="第四颗星">✦</button>
+        <button type="button" class="wish-star" aria-label="第五颗星">✦</button>
+      </div>
+      <p class="secret-name" id="secretName" aria-live="polite">刘毓雯，原来你就是我想奔赴的星光。</p>
+    </section>
+    <section class="gift">
+      <div><h2>拆开一份小礼物</h2><p id="giftText">里面藏着一句只想说给你听的话。</p></div>
+      <button type="button" id="openGift">点击拆开 🎁</button>
+    </section>
+    <section>
+      <h2>我们的七夕心愿</h2>
+      <div class="wish-form"><input id="wishInput" maxlength="40" placeholder="写下一个想和我完成的心愿…" aria-label="七夕心愿" /><button type="button" id="addWish">收藏心愿</button></div>
+      <ul class="wish-list" id="wishList"><li>一起吃一顿慢慢的晚餐</li><li>牵手去看一次星星</li></ul>
+    </section>
+    <section class="final-secret" id="finalSecret">
+      <h2>最后一个小问题</h2>
+      <p>刘毓雯，愿意和我一起把今天，过成很多很多天吗？</p>
+      <div class="answer-row"><button type="button" id="yes">愿意 ♥</button><button type="button" class="no" id="no">再想想</button></div>
+      <p class="answer" id="answer" aria-live="polite"></p>
+    </section>
+    <p class="footer">愿朝朝暮暮，皆是你。七夕快乐 ✦</p>
+  </main>
+  <script>
+    const qixi = new Date('2026-08-19T00:00:00+08:00');
+    function tick(){ const d=Math.max(0,qixi-Date.now()); const v=[Math.floor(d/864e5),Math.floor(d/36e5)%24,Math.floor(d/6e4)%60,Math.floor(d/1e3)%60]; ['days','hours','mins','secs'].forEach((id,i)=>document.getElementById(id).textContent=String(v[i]).padStart(2,'0')); }
+    tick(); setInterval(tick,1000);
+    const quotes=['“喜欢你不是三分钟热度，是蓄谋已久后的深思熟虑。”','“刘毓雯，你是我平淡生活里，最闪亮的那颗糖。”','“如果浪漫有名字，那一定是刘毓雯。”','“想把所有温柔都攒起来，只留给你。”'];
+    document.getElementById('newQuote').onclick=()=>{ const e=document.getElementById('quote'); let n; do n=quotes[Math.floor(Math.random()*quotes.length)]; while(n===e.textContent); e.textContent=n; hearts(); };
+    document.getElementById('openGift').onclick=()=>{ document.getElementById('giftText').textContent='礼物是：未来每一个平凡又珍贵的日子，都想和你一起度过。'; document.getElementById('openGift').textContent='已收下爱意 ♥'; hearts(18); };
+    document.getElementById('addWish').onclick=addWish; document.getElementById('wishInput').addEventListener('keydown',e=>{if(e.key==='Enter')addWish()});
+    function addWish(){ const input=document.getElementById('wishInput'), val=input.value.trim(); if(!val)return; const li=document.createElement('li');li.textContent=val;document.getElementById('wishList').append(li);input.value='';hearts(10); }
+    const stars=[...document.querySelectorAll('.wish-star')]; let lit=0;
+    stars.forEach(s=>s.onclick=()=>{if(s.classList.contains('lit'))return;s.classList.add('lit');lit++;hearts(5);if(lit===stars.length){document.getElementById('secretName').classList.add('show');document.getElementById('openGift').textContent='拆给刘毓雯的礼物 🎁';}});
+    document.getElementById('yes').onclick=()=>{document.getElementById('answer').textContent='那就说好啦：以后的七夕、周末和每一个普通日子，都一起收藏。';document.getElementById('finalSecret').classList.add('answered');hearts(30)};
+    document.getElementById('no').onclick=()=>{const b=document.getElementById('no');b.textContent='不许犹豫啦 ♥';b.style.transform='translateX('+(Math.random()>.5?42:-42)+'px)';};
+    function hearts(n=12){ for(let i=0;i<n;i++){ const h=document.createElement('i'); h.className='burst';h.textContent='♥';h.style.left='50%';h.style.top='50%';h.style.setProperty('--x',(Math.random()*360-180)+'px');h.style.setProperty('--y',(Math.random()*-300-30)+'px');document.body.append(h);setTimeout(()=>h.remove(),900); } }
+    const starBox=document.querySelector('.stars'), heartBox=document.querySelector('.hearts'); for(let i=0;i<28;i++){let s=document.createElement('i');s.className='star';s.textContent='✦';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*75+'%';s.style.animationDelay=Math.random()*3+'s';starBox.append(s)} for(let i=0;i<10;i++){let h=document.createElement('i');h.className='float-heart';h.textContent='♥';h.style.left=Math.random()*100+'%';h.style.animationDelay=-Math.random()*11+'s';h.style.fontSize=12+Math.random()*22+'px';heartBox.append(h)}
+  </script>
+</body>
+</html>
